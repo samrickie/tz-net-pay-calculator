@@ -1,0 +1,9 @@
+{
+  "name": "Tanzania Net Pay Calculator",
+  "short_name": "TZ Net Pay",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f7f7",
+  "theme_color": "#0f766e",
+  "description": "Fast Tanzania salary and take-home pay calculator."
+}
