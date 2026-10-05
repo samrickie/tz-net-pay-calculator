@@ -4,129 +4,182 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0f766e" />
-  <meta name="description" content="Fast Tanzania net pay calculator with PAYE, NSSF/PSSSF and optional HESLB deductions." />
+  <meta name="description" content="Friendly Tanzania net pay calculator with clear PAYE explanation, pension deductions, and optional HESLB." />
   <title>Tanzania Net Pay Calculator</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <style>
-    :root {
-      --bg:#f5f7f7;--card:#fff;--ink:#12201f;--muted:#667573;--line:#dfe7e5;
-      --brand:#0f766e;--brand2:#115e59;--soft:#e9f6f4;--danger:#b42318;--shadow:0 12px 30px rgba(20,45,42,.08);
-    }
-    *{box-sizing:border-box} html{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
-    body{margin:0;min-height:100vh;background:radial-gradient(circle at top left,#dff3ef 0,transparent 34rem),var(--bg)}
-    button,input,select{font:inherit} button{cursor:pointer}
-    .shell{width:min(1100px,calc(100% - 28px));margin:0 auto;padding:28px 0 42px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:24px}
-    .brand{display:flex;align-items:center;gap:12px}.mark{width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,var(--brand),#17a398);display:grid;place-items:center;color:white;font-weight:900;box-shadow:var(--shadow)}
-    h1{font-size:clamp(1.15rem,3vw,1.55rem);margin:0;letter-spacing:-.03em}.sub{color:var(--muted);font-size:.9rem;margin-top:3px}
-    .privacy{font-size:.8rem;color:var(--brand2);background:var(--soft);border:1px solid #cde9e4;padding:8px 11px;border-radius:999px;white-space:nowrap}
-    .grid{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(320px,.96fr);gap:22px;align-items:start}
-    .card{background:rgba(255,255,255,.96);border:1px solid rgba(209,222,219,.9);border-radius:24px;box-shadow:var(--shadow)}
-    .form-card{padding:22px}.result-card{padding:24px;position:sticky;top:18px}
-    .section-title{font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 14px}
-    .field{margin-bottom:16px}.label-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}label{font-size:.9rem;font-weight:720}.hint{font-size:.75rem;color:var(--muted)}
-    .money{position:relative}.money span{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-weight:800;color:var(--muted);pointer-events:none}.money input{padding-left:54px}
-    input,select{width:100%;border:1px solid var(--line);background:#fbfdfd;color:var(--ink);border-radius:14px;padding:13px 14px;outline:none;transition:.18s border,.18s box-shadow,.18s background}
-    input:focus,select:focus{border-color:#50aaa2;box-shadow:0 0 0 4px rgba(15,118,110,.09);background:#fff}
-    .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .toggle-box{display:flex;align-items:center;justify-content:space-between;gap:16px;border:1px solid var(--line);border-radius:16px;padding:13px 14px;background:#fbfdfd;margin-top:8px}.toggle-copy strong{display:block;font-size:.91rem}.toggle-copy small{color:var(--muted)}
-    .switch{position:relative;width:48px;height:28px;flex:0 0 auto}.switch input{opacity:0;width:0;height:0}.slider{position:absolute;inset:0;border-radius:99px;background:#c9d4d2;transition:.2s}.slider:before{content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;border-radius:50%;background:white;box-shadow:0 2px 7px rgba(0,0,0,.18);transition:.2s}.switch input:checked+.slider{background:var(--brand)}.switch input:checked+.slider:before{transform:translateX(20px)}
-    .conditional{display:none;margin-top:12px}.conditional.show{display:block}
-    .actions{display:flex;gap:10px;margin-top:20px}.btn{border:0;border-radius:14px;padding:13px 16px;font-weight:800}.btn-primary{background:var(--brand);color:white;flex:1}.btn-primary:hover{background:var(--brand2)}.btn-ghost{background:#eef3f2;color:#465755}
-    .eyebrow{font-size:.8rem;color:var(--muted);font-weight:700}.net{font-size:clamp(2rem,6vw,3.35rem);font-weight:900;letter-spacing:-.055em;margin:6px 0 4px;line-height:1}.net small{font-size:.32em;color:var(--muted);letter-spacing:0;font-weight:800}.annual{color:var(--muted);font-size:.88rem}
-    .bar{height:11px;background:#e8efee;border-radius:99px;overflow:hidden;margin:22px 0 9px}.bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),#25a99d);border-radius:99px;transition:width .25s ease}.takehome-note{font-size:.78rem;color:var(--muted)}
-    .summary{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}.summary-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;font-size:.92rem}.summary-row span:first-child{color:#53625f}.summary-row strong{white-space:nowrap}.summary-row.total{border-top:1px dashed var(--line);margin-top:4px;padding-top:15px}.negative{color:var(--danger)}
-    details{margin-top:18px;border:1px solid var(--line);border-radius:15px;background:#fbfdfd;overflow:hidden}summary{padding:13px 14px;font-size:.84rem;font-weight:800;cursor:pointer}.facts{padding:0 14px 13px;color:var(--muted);font-size:.78rem;line-height:1.5}.facts p{margin:7px 0}.facts a{color:var(--brand2)}
-    .error{display:none;color:var(--danger);background:#fff0ee;border:1px solid #ffd1cb;border-radius:12px;padding:10px 12px;font-size:.82rem;margin-top:14px}.error.show{display:block}
-    footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-height:1.5}
-    .pill{display:inline-flex;align-items:center;gap:7px;border-radius:999px;background:#f1f6f5;padding:6px 9px;font-size:.74rem;color:#53625f;margin-top:10px}.dot{width:7px;height:7px;border-radius:50%;background:#22a06b}
-    @media(max-width:800px){.grid{grid-template-columns:1fr}.result-card{position:static}.privacy{display:none}.shell{padding-top:18px}.card{border-radius:20px}}
-    @media(max-width:480px){.row2{grid-template-columns:1fr}.form-card,.result-card{padding:18px}.net{font-size:2.5rem}.actions{flex-direction:column-reverse}.btn-ghost{width:100%}}
-  </style>
+:root{
+  --bg:#f3f8f7;--surface:#ffffff;--ink:#102321;--muted:#637673;--line:#d9e7e4;
+  --brand:#087a70;--brand2:#0b5e66;--mint:#e5f7f3;--gold:#f4a71d;--goldsoft:#fff4d9;
+  --danger:#b42318;--shadow:0 18px 46px rgba(20,50,47,.09)
+}
+*{box-sizing:border-box}
+html{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+body{margin:0;min-height:100vh;background:
+radial-gradient(circle at 0 0,rgba(8,122,112,.18),transparent 26rem),
+radial-gradient(circle at 100% 0,rgba(244,167,29,.13),transparent 22rem),
+linear-gradient(180deg,#f8fbfb,#f0f7f6)}
+button,input,select{font:inherit}button{cursor:pointer}
+.shell{width:min(1160px,calc(100% - 28px));margin:0 auto;padding:24px 0 42px}
+.hero{position:relative;overflow:hidden;padding:26px;border:1px solid rgba(213,230,226,.95);border-radius:30px;background:rgba(255,255,255,.88);box-shadow:var(--shadow);margin-bottom:22px}
+.hero:after{content:"";position:absolute;width:250px;height:250px;border-radius:50%;right:-95px;top:-110px;background:radial-gradient(circle,rgba(8,122,112,.19),transparent 70%);pointer-events:none}
+.hero-top{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+.brand{display:flex;align-items:flex-start;gap:14px}
+.mark{width:56px;height:56px;border-radius:18px;background:linear-gradient(145deg,var(--brand),#17b7aa);display:grid;place-items:center;color:#fff;font-weight:900;box-shadow:0 14px 28px rgba(8,122,112,.23);flex:0 0 auto}
+h1{font-size:clamp(1.35rem,4vw,2.05rem);line-height:1.05;letter-spacing:-.04em;margin:0}
+.sub{color:var(--muted);font-size:.96rem;line-height:1.55;margin-top:7px;max-width:58ch}
+.privacy{font-size:.81rem;font-weight:800;color:var(--brand2);background:var(--mint);border:1px solid #cce9e4;padding:9px 12px;border-radius:999px;white-space:nowrap}
+.hero-info{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-top:20px}
+.info-panel{border:1px solid #dce9e6;border-radius:20px;background:rgba(255,255,255,.78);padding:16px}
+.info-title{font-size:.76rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:900;margin-bottom:10px}
+.info-panel p{margin:0;color:#38504d;font-size:.88rem;line-height:1.55}
+.steps{display:flex;flex-wrap:wrap;gap:8px}
+.stepchip{padding:9px 11px;border-radius:999px;background:#f4fbfa;border:1px solid #deece9;font-size:.78rem;color:#405956;font-weight:700}
+.stepchip b{color:var(--brand2)}
+.grid{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(320px,.98fr);gap:22px;align-items:start}
+.card{background:rgba(255,255,255,.9);border:1px solid rgba(211,226,223,.96);border-radius:26px;box-shadow:var(--shadow)}
+.form-card{padding:24px}.result-card{padding:24px;position:sticky;top:18px}
+.section-title{font-size:.79rem;font-weight:900;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:0 0 14px}
+.field{margin-bottom:16px}.label-row{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px}label{font-size:.91rem;font-weight:760}.hint{font-size:.75rem;color:var(--muted)}
+.money{position:relative}.money span{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-weight:900;color:var(--muted);pointer-events:none}.money input{padding-left:54px}
+input,select{width:100%;border:1px solid var(--line);background:#fcfefe;color:var(--ink);border-radius:15px;padding:13px 14px;outline:none;transition:.18s border,.18s box-shadow,.18s background}
+input:focus,select:focus{border-color:#52a9a1;box-shadow:0 0 0 4px rgba(8,122,112,.09);background:#fff}
+.toggle-box{display:flex;align-items:center;justify-content:space-between;gap:16px;border:1px solid var(--line);border-radius:18px;padding:14px;background:linear-gradient(180deg,#fcfefe,#f5fbfa);margin-top:8px}.toggle-copy strong{display:block;font-size:.92rem}.toggle-copy small{display:block;color:var(--muted);line-height:1.45}
+.switch{position:relative;width:50px;height:28px;flex:0 0 auto}.switch input{opacity:0;width:0;height:0}.slider{position:absolute;inset:0;border-radius:99px;background:#ccd7d5;transition:.2s}.slider:before{content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;border-radius:50%;background:#fff;box-shadow:0 2px 7px rgba(0,0,0,.16);transition:.2s}.switch input:checked+.slider{background:var(--brand)}.switch input:checked+.slider:before{transform:translateX(22px)}
+.conditional{display:none;margin-top:12px}.conditional.show{display:block}
+.actions{display:flex;gap:10px;margin-top:20px}.btn{border:0;border-radius:15px;padding:13px 16px;font-weight:850}.btn-primary{flex:1;color:#fff;background:linear-gradient(135deg,var(--brand),#11a99d);box-shadow:0 12px 22px rgba(8,122,112,.18)}.btn-ghost{background:#edf5f4;color:#49605e}
+.eyebrow{font-size:.78rem;color:var(--muted);font-weight:850;letter-spacing:.04em}
+.net-panel{margin-top:12px;padding:20px;border-radius:23px;background:linear-gradient(135deg,#0b897e,#0b6068);color:#fff;box-shadow:0 17px 30px rgba(8,122,112,.22)}
+.net{font-size:clamp(2rem,6vw,3.35rem);font-weight:900;letter-spacing:-.055em;margin:0;line-height:1}.net small{font-size:.31em;opacity:.9;letter-spacing:0;font-weight:800}.annual{font-size:.88rem;opacity:.9;margin-top:8px}
+.bar{height:11px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden;margin:18px 0 10px}.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#fff,#ffe4a3);border-radius:99px;transition:width .25s}.takehome-note{font-size:.8rem;opacity:.93}
+.quick-note{margin-top:14px;border:1px solid #eedcae;background:var(--goldsoft);border-radius:17px;padding:13px 14px;color:#6b5317;font-size:.82rem;line-height:1.5}
+.summary{border-top:1px solid var(--line);margin-top:20px;padding-top:14px}.summary-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;font-size:.93rem}.summary-row span:first-child{color:#53625f}.summary-row strong{white-space:nowrap}.summary-row.total{border-top:1px dashed var(--line);margin-top:4px;padding-top:15px}.negative{color:var(--danger)}
+.pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;background:#f1f7f6;border:1px solid #dce8e6;padding:8px 11px;font-size:.75rem;color:#53625f;margin-top:12px}.dot{width:8px;height:8px;border-radius:50%;background:#20a676}
+details{margin-top:18px;border:1px solid var(--line);border-radius:18px;background:#fbfdfd;overflow:hidden}summary{padding:14px 16px;font-size:.85rem;font-weight:900;cursor:pointer}.facts{padding:0 16px 16px;color:#4c5e5b;font-size:.8rem;line-height:1.6}.facts p{margin:9px 0}.taxline{padding:10px 12px;border-radius:12px;background:#f4faf9;border:1px solid #e1ecea;margin:8px 0}
+.error{display:none;color:var(--danger);background:#fff2f0;border:1px solid #ffd1cb;border-radius:12px;padding:10px 12px;font-size:.82rem;margin-top:14px}.error.show{display:block}
+footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-height:1.55}
+@media(max-width:900px){.hero-info,.grid{grid-template-columns:1fr}.result-card{position:static}}
+@media(max-width:640px){.hero-top{flex-direction:column}.privacy{white-space:normal}.hero,.form-card,.result-card{padding:18px}.hero,.card{border-radius:22px}.actions{flex-direction:column-reverse}.btn-ghost{width:100%}.net{font-size:2.45rem}}
+</style>
 </head>
 <body>
-  <main class="shell">
-    <header>
-      <div class="brand"><div class="mark">TZ</div><div><h1>Tanzania Net Pay Calculator</h1><div class="sub">Simple salary breakdown • Mainland Tanzania</div></div></div>
-      <div class="privacy">🔒 Calculated on your device</div>
-    </header>
-
-    <div class="grid">
-      <section class="card form-card" aria-label="Salary inputs">
-        <p class="section-title">Your monthly salary</p>
-        <div class="field">
-          <div class="label-row"><label for="basic">Basic salary</label><span class="hint">Required</span></div>
-          <div class="money"><span>TZS</span><input id="basic" inputmode="numeric" autocomplete="off" placeholder="1,500,000" /></div>
+<main class="shell">
+  <section class="hero">
+    <div class="hero-top">
+      <div class="brand">
+        <div class="mark">TZ</div>
+        <div>
+          <h1>Tanzania Net Pay Calculator</h1>
+          <div class="sub">A simple and friendly way to estimate what actually reaches your account after PAYE, pension, HESLB and other deductions.</div>
         </div>
-        <div class="field">
-          <div class="label-row"><label for="allowances">Taxable allowances / bonuses</label><span class="hint">Optional</span></div>
-          <div class="money"><span>TZS</span><input id="allowances" inputmode="numeric" autocomplete="off" placeholder="0" /></div>
+      </div>
+      <div class="privacy">🔒 Your salary stays on your device</div>
+    </div>
+    <div class="hero-info">
+      <div class="info-panel">
+        <div class="info-title">How it works</div>
+        <p>Enter your monthly salary, choose the deductions that apply to you, and the calculator shows your gross pay, taxable income, PAYE and estimated take-home pay.</p>
+      </div>
+      <div class="info-panel">
+        <div class="info-title">Three simple steps</div>
+        <div class="steps">
+          <span class="stepchip"><b>1.</b> Add salary</span>
+          <span class="stepchip"><b>2.</b> Choose deductions</span>
+          <span class="stepchip"><b>3.</b> See net pay</span>
         </div>
+      </div>
+    </div>
+  </section>
 
-        <p class="section-title" style="margin-top:24px">Deductions</p>
-        <div class="field">
-          <div class="label-row"><label for="pension">Pension scheme</label><span class="hint">Employee share</span></div>
-          <select id="pension">
-            <option value="nssf">NSSF — 10%</option>
-            <option value="psssf">PSSSF — 5%</option>
-            <option value="none">No pension deduction</option>
-            <option value="custom">Custom percentage</option>
-          </select>
-          <div id="customWrap" class="conditional">
-            <div class="label-row"><label for="customRate">Custom employee rate</label><span class="hint">0–20%</span></div>
-            <input id="customRate" type="number" min="0" max="20" step="0.1" value="10" />
-          </div>
+  <div class="grid">
+    <section class="card form-card" aria-label="Salary inputs">
+      <p class="section-title">Your monthly salary</p>
+      <div class="field">
+        <div class="label-row"><label for="basic">Basic salary</label><span class="hint">Required</span></div>
+        <div class="money"><span>TZS</span><input id="basic" inputmode="numeric" autocomplete="off" placeholder="1,500,000" /></div>
+      </div>
+      <div class="field">
+        <div class="label-row"><label for="allowances">Taxable allowances / bonuses</label><span class="hint">Optional</span></div>
+        <div class="money"><span>TZS</span><input id="allowances" inputmode="numeric" autocomplete="off" placeholder="0" /></div>
+      </div>
+
+      <p class="section-title" style="margin-top:24px">Your deductions</p>
+      <div class="field">
+        <div class="label-row"><label for="pension">Pension scheme</label><span class="hint">Employee share</span></div>
+        <select id="pension">
+          <option value="nssf">NSSF — 10%</option>
+          <option value="psssf">PSSSF — 5%</option>
+          <option value="none">No pension deduction</option>
+          <option value="custom">Custom percentage</option>
+        </select>
+        <div id="customWrap" class="conditional">
+          <div class="label-row"><label for="customRate">Custom employee rate</label><span class="hint">0–20%</span></div>
+          <input id="customRate" type="number" min="0" max="20" step="0.1" value="10" />
         </div>
+      </div>
 
-        <div class="toggle-box">
-          <div class="toggle-copy"><strong>HESLB loan repayment</strong><small>15% of basic salary</small></div>
-          <label class="switch" aria-label="Include HESLB"><input id="heslb" type="checkbox" /><span class="slider"></span></label>
+      <div class="toggle-box">
+        <div class="toggle-copy">
+          <strong>HESLB loan repayment</strong>
+          <small>Turn this on if 15% of your basic salary is deducted for HESLB.</small>
         </div>
+        <label class="switch" aria-label="Include HESLB"><input id="heslb" type="checkbox" /><span class="slider"></span></label>
+      </div>
 
-        <div class="field" style="margin-top:16px">
-          <div class="label-row"><label for="other">Other deductions</label><span class="hint">Optional</span></div>
-          <div class="money"><span>TZS</span><input id="other" inputmode="numeric" autocomplete="off" placeholder="0" /></div>
-        </div>
+      <div class="field" style="margin-top:16px">
+        <div class="label-row"><label for="other">Other deductions</label><span class="hint">Optional</span></div>
+        <div class="money"><span>TZS</span><input id="other" inputmode="numeric" autocomplete="off" placeholder="0" /></div>
+      </div>
 
-        <div class="actions">
-          <button class="btn btn-ghost" id="reset" type="button">Reset</button>
-          <button class="btn btn-primary" id="calculate" type="button">Calculate net pay</button>
-        </div>
-        <div id="error" class="error" role="alert"></div>
-      </section>
+      <div class="actions">
+        <button class="btn btn-ghost" id="reset" type="button">Reset</button>
+        <button class="btn btn-primary" id="calculate" type="button">Calculate net pay</button>
+      </div>
+      <div id="error" class="error" role="alert"></div>
+    </section>
 
-      <aside class="card result-card" aria-live="polite">
-        <div class="eyebrow">Estimated take-home pay</div>
+    <aside class="card result-card" aria-live="polite">
+      <div class="eyebrow">ESTIMATED TAKE-HOME PAY</div>
+      <div class="net-panel">
         <div class="net"><span id="netPay">TZS 0</span> <small>/ month</small></div>
         <div class="annual" id="annualNet">TZS 0 per year</div>
         <div class="bar"><i id="takeBar"></i></div>
         <div class="takehome-note" id="takeNote">Enter your salary to see your estimate.</div>
+      </div>
 
-        <div class="summary">
-          <div class="summary-row"><span>Gross pay</span><strong id="grossOut">TZS 0</strong></div>
-          <div class="summary-row"><span>Pension</span><strong class="negative" id="pensionOut">− TZS 0</strong></div>
-          <div class="summary-row"><span>PAYE</span><strong class="negative" id="payeOut">− TZS 0</strong></div>
-          <div class="summary-row" id="heslbRow" style="display:none"><span>HESLB</span><strong class="negative" id="heslbOut">− TZS 0</strong></div>
-          <div class="summary-row" id="otherRow" style="display:none"><span>Other deductions</span><strong class="negative" id="otherOut">− TZS 0</strong></div>
-          <div class="summary-row total"><span>Total deductions</span><strong id="totalDeduct">TZS 0</strong></div>
+      <div class="quick-note"><b>PAYE is progressive.</b> A 30% tax band does not mean 30% of your entire salary is taxed. Only the part that falls inside that band is charged at 30%.</div>
+
+      <div class="summary">
+        <div class="summary-row"><span>Gross pay</span><strong id="grossOut">TZS 0</strong></div>
+        <div class="summary-row"><span>Pension</span><strong class="negative" id="pensionOut">− TZS 0</strong></div>
+        <div class="summary-row"><span>PAYE</span><strong class="negative" id="payeOut">− TZS 0</strong></div>
+        <div class="summary-row" id="heslbRow" style="display:none"><span>HESLB</span><strong class="negative" id="heslbOut">− TZS 0</strong></div>
+        <div class="summary-row" id="otherRow" style="display:none"><span>Other deductions</span><strong class="negative" id="otherOut">− TZS 0</strong></div>
+        <div class="summary-row total"><span>Total deductions</span><strong id="totalDeduct">TZS 0</strong></div>
+      </div>
+
+      <div class="pill"><span class="dot"></span><span id="taxableOut">Taxable income: TZS 0</span></div>
+
+      <details>
+        <summary>Understand the PAYE rates</summary>
+        <div class="facts">
+          <p><b>PAYE is calculated in layers.</b> Each part of your taxable income is charged according to the band it falls into.</p>
+          <div class="taxline"><b>TZS 0 – 270,000:</b> No PAYE.</div>
+          <div class="taxline"><b>TZS 270,001 – 520,000:</b> 8% of the amount above TZS 270,000.</div>
+          <div class="taxline"><b>TZS 520,001 – 760,000:</b> TZS 20,000 + 20% of the amount above TZS 520,000.</div>
+          <div class="taxline"><b>TZS 760,001 – 1,000,000:</b> TZS 68,000 + 25% of the amount above TZS 760,000.</div>
+          <div class="taxline"><b>Above TZS 1,000,000:</b> TZS 128,000 + 30% of only the amount above TZS 1,000,000.</div>
+          <p><b>NSSF:</b> default employee share 10%. <b>PSSSF:</b> employee share 5%.</p>
+          <p><b>HESLB:</b> optional 15% of basic salary for an employed beneficiary.</p>
+          <p>WCF and SDL are employer costs, so they are not deducted from employee net pay here.</p>
+          <p>Rates reviewed October 2026. This is an estimate, not tax or payroll advice.</p>
         </div>
+      </details>
+    </aside>
+  </div>
 
-        <div class="pill"><span class="dot"></span><span id="taxableOut">Taxable income: TZS 0</span></div>
-
-        <details>
-          <summary>Rates used in this calculator</summary>
-          <div class="facts">
-            <p><b>PAYE:</b> 0% to 270,000; 8% to 520,000; 20% to 760,000; 25% to 1,000,000; 30% above 1,000,000.</p>
-            <p><b>NSSF:</b> default employee share 10%. <b>PSSSF:</b> employee share 5%.</p>
-            <p><b>HESLB:</b> 15% of basic salary for an employed beneficiary.</p>
-            <p>WCF and SDL are employer costs, so they are not deducted from employee net pay here.</p>
-            <p>Rates reviewed October 2026. This is an estimate, not tax or payroll advice.</p>
-          </div>
-        </details>
-      </aside>
-    </div>
-    <footer>Designed for fast, private salary estimates. No login, no tracking, no salary data sent to a server.</footer>
-  </main>
+  <footer>Fast, private salary estimates for Mainland Tanzania. No login, no tracking, no salary data sent to a server.</footer>
+</main>
 <script>
 (() => {
   const $ = id => document.getElementById(id);
