@@ -263,7 +263,7 @@ footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-
   $('reset').addEventListener('click', () => {
     els.basic.value=''; els.allowances.value=''; els.other.value=''; els.pension.value='nssf'; els.customRate.value='10'; els.heslb.checked=false; els.customWrap.classList.remove('show'); els.error.classList.remove('show'); calculate(); els.basic.focus();
   });
-  if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+  if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw-v3.js').catch(()=>{}));
   calculate();
 })();
 </script>
