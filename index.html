@@ -104,7 +104,7 @@ footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-
         <button class="mode-btn" id="reverseMode" type="button">Net → Gross</button>
       </div>
 
-      <div id="reverseNote" class="reverse-note">Reverse mode estimates the <b>gross/basic salary</b> needed to receive your target net pay. HESLB, pension and other deductions are included using the options below.</div>
+      <div id="reverseNote" class="reverse-note">Reverse mode estimates the <b>gross/basic salary</b> needed to receive your target net pay. HESLB, NHIF, pension and other deductions are included using the options below.</div>
 
       <div id="targetNetField" class="field mode-hidden">
         <div class="label-row"><label for="targetNet">Desired net salary</label><span class="hint">Required</span></div>
@@ -146,6 +146,14 @@ footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-
         <label class="switch" aria-label="Include HESLB"><input id="heslb" type="checkbox" /><span class="slider"></span></label>
       </div>
 
+      <div class="toggle-box">
+        <div class="toggle-copy">
+          <strong>NHIF contribution</strong>
+          <small>Enable if NHIF applies to your payroll. Employee share: 3% of basic salary.</small>
+        </div>
+        <label class="switch" aria-label="Include NHIF"><input id="nhif" type="checkbox" /><span class="slider"></span></label>
+      </div>
+
       <div class="field" style="margin-top:16px">
         <div class="label-row"><label for="other">Other deductions</label><span class="hint">Optional</span></div>
         <div class="money"><span>TZS</span><input id="other" inputmode="numeric" autocomplete="off" placeholder="0" /></div>
@@ -174,6 +182,7 @@ footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-
         <div class="summary-row"><span>Pension</span><strong class="negative" id="pensionOut">− TZS 0</strong></div>
         <div class="summary-row"><span>PAYE</span><strong class="negative" id="payeOut">− TZS 0</strong></div>
         <div class="summary-row" id="heslbRow" style="display:none"><span>HESLB</span><strong class="negative" id="heslbOut">− TZS 0</strong></div>
+        <div class="summary-row" id="nhifRow" style="display:none"><span>NHIF</span><strong class="negative" id="nhifOut">− TZS 0</strong></div>
         <div class="summary-row" id="otherRow" style="display:none"><span>Other deductions</span><strong class="negative" id="otherOut">− TZS 0</strong></div>
         <div class="summary-row total"><span>Total deductions</span><strong id="totalDeduct">TZS 0</strong></div>
       </div>
@@ -191,6 +200,7 @@ footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-
           <div class="taxline"><b>Above TZS 1,000,000:</b> TZS 128,000 + 30% of only the amount above TZS 1,000,000.</div>
           <p><b>NSSF:</b> default employee share 10%. <b>PSSSF:</b> employee share 5%.</p>
           <p><b>HESLB:</b> optional 15% of basic salary for an employed beneficiary.</p>
+          <p><b>NHIF:</b> optional employee contribution of 3% of basic salary where applicable. The employer contributes a separate 3%.</p>
           <p>WCF and SDL are employer costs, so they are not deducted from employee net pay here.</p>
           <p>Rates reviewed October 2026. This is an estimate, not tax or payroll advice.</p>
         </div>
@@ -207,10 +217,10 @@ footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-
     basic:$('basic'), allowances:$('allowances'), targetNet:$('targetNet'), targetNetField:$('targetNetField'), salaryFields:$('salaryFields'),
     forwardMode:$('forwardMode'), reverseMode:$('reverseMode'), reverseNote:$('reverseNote'),
     pension:$('pension'), customRate:$('customRate'), customWrap:$('customWrap'),
-    heslb:$('heslb'), other:$('other'), error:$('error'), netPay:$('netPay'), annualNet:$('annualNet'),
+    heslb:$('heslb'), nhif:$('nhif'), other:$('other'), error:$('error'), netPay:$('netPay'), annualNet:$('annualNet'),
     takeBar:$('takeBar'), takeNote:$('takeNote'), resultEyebrow:$('resultEyebrow'), resultUnit:$('resultUnit'),
-    grossOut:$('grossOut'), pensionOut:$('pensionOut'), payeOut:$('payeOut'), heslbOut:$('heslbOut'),
-    otherOut:$('otherOut'), heslbRow:$('heslbRow'), otherRow:$('otherRow'), totalDeduct:$('totalDeduct'), taxableOut:$('taxableOut'),
+    grossOut:$('grossOut'), pensionOut:$('pensionOut'), payeOut:$('payeOut'), heslbOut:$('heslbOut'), nhifOut:$('nhifOut'),
+    otherOut:$('otherOut'), heslbRow:$('heslbRow'), nhifRow:$('nhifRow'), otherRow:$('otherRow'), totalDeduct:$('totalDeduct'), taxableOut:$('taxableOut'),
     calculate:$('calculate')
   };
 
@@ -240,8 +250,9 @@ footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-
     const taxable = Math.max(0, gross - pension);
     const tax = paye(taxable);
     const heslb = els.heslb.checked ? basic * 0.15 : 0;
-    const net = gross - pension - tax - heslb - other;
-    return {gross,pension,taxable,paye:tax,heslb,other,net:Math.max(0,net)};
+    const nhif = els.nhif.checked ? basic * 0.03 : 0;
+    const net = gross - pension - tax - heslb - nhif - other;
+    return {gross,pension,taxable,paye:tax,heslb,nhif,other,net:Math.max(0,net)};
   }
 
   function solveGross(targetNet, other) {
@@ -270,7 +281,7 @@ footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-
     if (mode === 'reverse') {
       const targetNet = numberFrom(els.targetNet.value);
       if (targetNet <= 0) {
-        render({gross:0,pension:0,taxable:0,paye:0,heslb:0,other,net:0});
+        render({gross:0,pension:0,taxable:0,paye:0,heslb:0,nhif:0,other,net:0});
         els.error.classList.remove('show');
         return;
       }
@@ -285,7 +296,7 @@ footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-
     const gross = basic + allowances;
 
     if (gross <= 0) {
-      render({gross:0,pension:0,taxable:0,paye:0,heslb:0,other,net:0});
+      render({gross:0,pension:0,taxable:0,paye:0,heslb:0,nhif:0,other,net:0});
       els.error.classList.remove('show');
       return;
     }
@@ -303,7 +314,7 @@ footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-
   }
 
   function render(v, targetNet) {
-    const total = v.pension + v.paye + v.heslb + v.other;
+    const total = v.pension + v.paye + v.heslb + v.nhif + v.other;
 
     if (mode === 'reverse') {
       els.resultEyebrow.textContent = 'ESTIMATED GROSS SALARY NEEDED';
@@ -328,10 +339,12 @@ footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-
     els.pensionOut.textContent = '− ' + tzs(v.pension);
     els.payeOut.textContent = '− ' + tzs(v.paye);
     els.heslbOut.textContent = '− ' + tzs(v.heslb);
+    els.nhifOut.textContent = '− ' + tzs(v.nhif);
     els.otherOut.textContent = '− ' + tzs(v.other);
     els.totalDeduct.textContent = tzs(total);
     els.taxableOut.textContent = 'Taxable income: ' + tzs(v.taxable);
     els.heslbRow.style.display = v.heslb > 0 ? 'flex' : 'none';
+    els.nhifRow.style.display = v.nhif > 0 ? 'flex' : 'none';
     els.otherRow.style.display = v.other > 0 ? 'flex' : 'none';
   }
 
@@ -359,6 +372,7 @@ footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-
     calculate();
   });
   els.heslb.addEventListener('change', calculate);
+  els.nhif.addEventListener('change', calculate);
   els.forwardMode.addEventListener('click', () => setMode('forward'));
   els.reverseMode.addEventListener('click', () => setMode('reverse'));
 
@@ -375,6 +389,7 @@ footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-
     els.pension.value='nssf';
     els.customRate.value='10';
     els.heslb.checked=false;
+    els.nhif.checked=false;
     els.customWrap.classList.remove('show');
     els.error.classList.remove('show');
     calculate();
@@ -382,7 +397,7 @@ footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-
   });
 
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => navigator.serviceWorker.register('./sw-v4.js').catch(()=>{}));
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw-v5.js').catch(()=>{}));
   }
 
   setMode('forward');
