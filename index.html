@@ -34,6 +34,10 @@ h1{font-size:clamp(1.35rem,4vw,2.05rem);line-height:1.05;letter-spacing:-.04em;m
 .info-title{font-size:.76rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:900;margin-bottom:10px}
 .info-panel p{margin:0;color:#38504d;font-size:.88rem;line-height:1.55}
 .steps{display:flex;flex-wrap:wrap;gap:8px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.apk-download{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;padding:11px 14px;border-radius:13px;background:linear-gradient(135deg,var(--brand),#10a99c);color:#fff;font-weight:850;font-size:.83rem;box-shadow:0 10px 20px rgba(8,122,112,.18)}
+.apk-download:hover{transform:translateY(-1px)}
+.native-app .apk-download{display:none!important}
 .stepchip{padding:9px 11px;border-radius:999px;background:#f4fbfa;border:1px solid #deece9;font-size:.78rem;color:#405956;font-weight:700}
 .stepchip b{color:var(--brand2)}
 .grid{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(320px,.98fr);gap:22px;align-items:start}
@@ -85,6 +89,9 @@ footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-
       <div class="info-panel">
         <div class="info-title">How it works</div>
         <p>Enter your monthly salary, choose the deductions that apply to you, and the calculator shows your gross pay, taxable income, PAYE and estimated take-home pay.</p>
+        <div class="hero-actions">
+          <a class="apk-download" href="./downloads/Tanzania-Net-Pay-Calculator.apk" download>⬇ Download Android App</a>
+        </div>
       </div>
       <div class="info-panel">
         <div class="info-title">Three simple steps</div>
@@ -397,7 +404,7 @@ footer{text-align:center;color:#7c8987;font-size:.75rem;padding:25px 4px 0;line-
   });
 
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => navigator.serviceWorker.register('./sw-v5.js').catch(()=>{}));
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw-v6.js').catch(()=>{}));
   }
 
   setMode('forward');
