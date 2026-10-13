@@ -23,7 +23,13 @@ public class MainActivity extends Activity {
         settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
 
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                view.evaluateJavascript("document.body.classList.add('native-app');", null);
+            }
+        });
+
         webView.loadUrl("file:///android_asset/index.html");
     }
 
